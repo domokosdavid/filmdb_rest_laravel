@@ -55,7 +55,7 @@ class FilmController extends Controller
     {
         $film = Film::find($id);
         if (is_null($film)) {
-            return response()->json("A megadott azonosítóval nem található film.", 404);
+            return response()->json(["message" => "A megadott azonosítóval nem található film."], 404);
         }
         return response()->json($film);
     }
@@ -81,7 +81,7 @@ class FilmController extends Controller
         }
         $film = Film::find($id);
         if (is_null($film)) {
-            return response()->json("A megadott azonosítóval nem található film.", 404);
+            return response()->json(["message" => "A megadott azonosítóval nem található film."], 404);
         }
         $film->fill($request->all());
         $film->save();
@@ -98,7 +98,7 @@ class FilmController extends Controller
     {
         $film = Film::find($id);
         if (is_null($film)) {
-            return response()->json("A megadott azonosítóval nem található film.", 404);
+            return response()->json(["message" => "A megadott azonosítóval nem található film."], 404);
         }
         Film::destroy($id);
         return response()->noContent();
