@@ -1,66 +1,111 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# FilmDb backend laraveles megvalósítása
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Filmek adatait tárolja
 
-## About Laravel
+## Telepítési lépések
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* Készítsünk egy másolatot az .env.example fájlról, .env néven!
+* A fájlban írjuk át az adatbázis kapcsolat adatait a megfelelőre!
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+A konzolban hajtsuk végre az alábbi utasításokat:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+    composer install
+    php artisan key:generate --ansi
+    php artisan migrate --seed
 
-## Learning Laravel
+A fejlesztői szervert az alábbi utasítással indíthatjuk el:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    php artisan serve
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Ellenőrizzük, hogy minden rendben van-e, hogy az alábbi URL teszt JSON adatokat ad-e vissza:
 
-## Laravel Sponsors
+http://localhost:8000/api/film
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Adattáblák
 
-### Premium Partners
+### filmek
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-- **[Romega Software](https://romegasoftware.com)**
+A tárolt filmek
 
-## Contributing
+* id: egész
+* cim: A film címe
+* kategoria: A film kategóriái felsorolva
+* hossz: A film hossza percben
+* ertekeles: A film értékelése 1-10-es skálán
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## API végpontok
 
-## Code of Conduct
+Minden be- és kimeneti adat JSON formátumú.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**GET /api/film**
 
-## Security Vulnerabilities
+Visszaadja a filmek listáját.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    [
+        {
+            "id": 1,
+            "cim": "Numquam labore similique excepturi.",
+            "kategoria": "horror, akció, fantasy",
+            "hossz": 74,
+            "ertekeles": 4
+        },
+        {
+            "id": 2,
+            "cim": "Architecto voluptas aspernatur ea qui est.",
+            "kategoria": "vígjáték, dráma",
+            "hossz": 118,
+            "ertekeles": 8
+        },
+    }
 
-## License
+**POST /api/film**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Létrehoz egy új filmet a megadott adatokkal. Az id-n kívül minden mező megadása kötelező!
+
+Visszaadja a létrehozott film adatait, beleértve a generált ID-t.
+
+**GET /api/film/{id}**
+
+Az *id* azonosítójú film adatait adja vissza.
+
+**PATCH /api/film/{id}**
+
+Módosítja az *id* azonosítójú film adatait. Csak a módosítandó adatokat kell megadni, pl. ha csak az értékelést szeretnénk módosítani, akkor elég ennyit megadni:
+
+    {
+        "ertekeles": 8,
+    }
+
+Az ID nem módosítható.
+
+Visszaadja a módosított film adatait.
+
+**PUT /api/film/{id}**
+
+Módosítja az *id* azonosítójú film adatait. Minden adatot meg kell adni.
+
+Az ID nem módosítható.
+
+Visszaadja a módosított film adatait.
+
+**DELETE /api/film/{id}**
+
+Törli az adott azonosítójú filmet.
+
+Visszatérésnek nem ad vissza tartalmat.
+
+## Hibakezelés
+
+Ha a végpontot nem megfelelően hívtuk meg, vagy az adatok nem felelnek meg a leírtaknak, a backend az alábbi módon jelzi a hibaeseteket:
+
+* A HTTP státusz kód a 400-as sávból fog kikerülni, a hiba típusának megfelelően
+* A visszakapott JSON objetum "message" tulajdonsága tartalmazza a hiba okát.
+
+Pl.: GET http://localhost:8000/api/film/9999 (nem létező id)
+
+    404 Not Found
+    {
+        "message": "A megadott azonosítóval nem található film"
+    }
+
+A kérésnél ne felejtsük beállítani az "Accept" header értékét "application/json"-ra!
